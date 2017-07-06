@@ -33,17 +33,27 @@ router.post('/', (req, res) => {
     });
 });
 
-router.get('/:userId/:enabled', function(req, res) {
+/*
+ * Get identities for user with ID 'userId'
+ * -userId: the ID of the userId
+ * -enabled: true | false to get enabled or disabled identities
+ */
+
+router.get('/:userId?/:serviceId?/:enabled?', function(req, res) {
     var id = req.params.userId;
-    var enabled = req.params.enabled;
-    console.log(id);
-    console.log(enabled);
+    var enabled = req.query.enabled;
+    var serviceId = req.query.serviceId;
+    console.log("id " + id);
+    var query = {};
+    query.userId = id;
+    if (typeof enabled !== 'undefined' && enabled !== null)
+        query.enabled = (enabled == 'true');
+    if (typeof serviceId !== 'undefined' && serviceId !== null)
+        query.serviceId = serviceId;
+    console.log(query);
     db = req.app.get('db');
     var collection = db.collection('identities');
-    collection.find({
-        'userId': id,
-        'enabled': (enabled == "true")
-    }).toArray(function(err, items) {
+    collection.find(query).toArray(function(err, items) {
         if (err) {
             res.status(500).send(err);
         } else {
@@ -51,5 +61,6 @@ router.get('/:userId/:enabled', function(req, res) {
         }
     });
 });
+
 
 module.exports = router;
