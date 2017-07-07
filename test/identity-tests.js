@@ -202,5 +202,21 @@ describe('Routing', function() {
                 });
         });
 
+        it('should return all email identities', function(done) {
+            request(url)
+                .get('/identities?serviceId=email')
+                .end(function(err, res) {
+                    if (err) {
+                        throw err;
+                    }
+                    res.should.have.property('status', 200);
+                    res.body.should.have.lengthOf(2);
+                    array = JSON.parse(res.text);
+                    assert.equal(array[0].serviceId, 'email');
+                    assert.equal(array[1].serviceId, 'email');
+                    done();
+                });
+        });
+
     });
 });

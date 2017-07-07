@@ -9,8 +9,18 @@ var BSON = mongo.BSONPure;
 /* GET identities listing. */
 router.get('/', (req, res, next) => {
     db = req.app.get('db');
+
+    var serviceId = req.query.serviceId;
+    var identity = req.query.identity;
+
+    var query = {};
+    if (typeof serviceId !== 'undefined' && serviceId !== null)
+        query.serviceId = serviceId;
+    if (typeof identity !== 'undefined' && identity !== null)
+        query.identity = identity;
+
     var collection = db.collection('identities');
-    collection.find().toArray((err, items) => {
+    collection.find(query).toArray((err, items) => {
         if (err) {
             res.status(500).send(err);
         } else {
