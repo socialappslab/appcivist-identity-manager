@@ -4,13 +4,12 @@ var mongo = require('mongodb').MongoClient;
 var port = (process.env.USNB_ENTITY_MANAGER_PORT);
 
 mongo.connect(process.env.USNB_MONGO_URI_ENTITY_MANAGER, (err, database) => {
-    if (err) {
+    if (err)
         throw err;
-    }
-
     //create collection
-    database.createCollection("preferences", function(err, collection) {
-        if (err) throw err;
+    database.createCollection("preferences", (err, collection) => {
+        if (err)
+            throw err;
 
         console.log("Created collection: preferences");
 

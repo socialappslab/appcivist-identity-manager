@@ -6,19 +6,19 @@ var dbutils = require('../lib/dbutils.js');
 
 var app = require('../start');
 
-describe('Routing', function() {
+describe('Routing', () => {
     var url = 'http://localhost:' + process.env.USNB_ENTITY_MANAGER_PORT;
 
-    before(function(done) {
-        dbutils.cleardb(function() {
+    before((done) => {
+        dbutils.cleardb(() => {
             done();
         });
     });
 
     //Create tests
     //
-    describe('Identity', function() {
-        it('should successfully create a new identity', function(done) {
+    describe('Identity', () => {
+        it('should successfully create a new identity', (done) => {
             var profile = {
                 serviceId: "facebookmessenger",
                 userId: "user@universe.u",
@@ -28,17 +28,15 @@ describe('Routing', function() {
             request(url)
                 .post('/identities')
                 .send(profile)
-                .end(function(err, res) {
-                    if (err) {
-                        console.log(err);
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     done();
                 });
         });
 
-        it('should successfully create another new identity', function(done) {
+        it('should successfully create another new identity', (done) => {
             var profile = {
                 serviceId: "email",
                 userId: "test@elsewhere.e",
@@ -48,16 +46,15 @@ describe('Routing', function() {
             request(url)
                 .post('/identities')
                 .send(profile)
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     done();
                 });
         });
 
-        it('should successfully create even another new identity', function(done) {
+        it('should successfully create even another new identity', (done) => {
             var profile = {
                 serviceId: "twitterdm",
                 userId: "third@ss.com",
@@ -67,17 +64,16 @@ describe('Routing', function() {
             request(url)
                 .post('/identities')
                 .send(profile)
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     done();
                 });
         });
 
 
-        it('should successfully create even another identity for a existing user', function(done) {
+        it('should successfully create even another identity for a existing user', (done) => {
             var profile = {
                 serviceId: "email",
                 userId: "third@ss.com",
@@ -87,16 +83,15 @@ describe('Routing', function() {
             request(url)
                 .post('/identities')
                 .send(profile)
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     done();
                 });
         });
 
-        it('should successfully create even another DISABLED identity for a existing user', function(done) {
+        it('should successfully create even another DISABLED identity for a existing user', (done) => {
             var profile = {
                 serviceId: "slack",
                 userId: "third@ss.com",
@@ -106,10 +101,9 @@ describe('Routing', function() {
             request(url)
                 .post('/identities')
                 .send(profile)
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     done();
                 });
@@ -117,13 +111,12 @@ describe('Routing', function() {
 
         //Read tests
         //
-        it('should return five identities of three users', function(done) {
+        it('should return five identities of three users', (done) => {
             request(url)
                 .get('/identities')
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     res.body.should.have.lengthOf(5);
                     array = JSON.parse(res.text);
@@ -136,13 +129,12 @@ describe('Routing', function() {
                 });
         });
 
-        it('should return two ENABLED identities of an existing user', function(done) {
+        it('should return two ENABLED identities of an existing user', (done) => {
             request(url)
                 .get('/identities/third@ss.com?enabled=true')
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     res.body.should.have.lengthOf(2);
                     array = JSON.parse(res.text);
@@ -154,13 +146,12 @@ describe('Routing', function() {
                 });
         });
 
-        it('should return one DISABLED identity of an existing user', function(done) {
+        it('should return one DISABLED identity of an existing user', (done) => {
             request(url)
                 .get('/identities/third@ss.com?enabled=false')
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     res.body.should.have.lengthOf(1);
                     array = JSON.parse(res.text);
@@ -170,13 +161,12 @@ describe('Routing', function() {
                 });
         });
 
-        it('should return the email identity of an existing user', function(done) {
+        it('should return the email identity of an existing user', (done) => {
             request(url)
                 .get('/identities/third@ss.com?serviceId=email')
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     res.body.should.have.lengthOf(1);
                     array = JSON.parse(res.text);
@@ -186,13 +176,12 @@ describe('Routing', function() {
                 });
         });
 
-        it('should return the twitterdm identity of an existing user', function(done) {
+        it('should return the twitterdm identity of an existing user', (done) => {
             request(url)
                 .get('/identities/third@ss.com?serviceId=twitterdm')
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     res.body.should.have.lengthOf(1);
                     array = JSON.parse(res.text);
@@ -202,13 +191,12 @@ describe('Routing', function() {
                 });
         });
 
-        it('should return all email identities', function(done) {
+        it('should return all email identities', (done) => {
             request(url)
                 .get('/identities?serviceId=email')
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     res.body.should.have.lengthOf(2);
                     array = JSON.parse(res.text);

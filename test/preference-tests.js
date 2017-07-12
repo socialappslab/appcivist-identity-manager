@@ -27,10 +27,8 @@ describe('Routing', () => {
                 .post('/preferences')
                 .send(profile)
                 .end((err, res) => {
-                    if (err) {
-                        console.log(err);
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     done();
                 });
@@ -45,10 +43,8 @@ describe('Routing', () => {
                 .post('/preferences')
                 .send(profile)
                 .end((err, res) => {
-                    if (err) {
-                        console.log(err);
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     done();
                 });
@@ -63,10 +59,8 @@ describe('Routing', () => {
                 .post('/preferences')
                 .send(profile)
                 .end((err, res) => {
-                    if (err) {
-                        console.log(err);
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 500);
                     done();
                 });
@@ -78,9 +72,8 @@ describe('Routing', () => {
             request(url)
                 .get('/preferences')
                 .end((err, res) => {
-                    if (err) {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     res.body.should.have.lengthOf(2);
                     array = JSON.parse(res.text);
@@ -94,11 +87,10 @@ describe('Routing', () => {
 
         it('should return one preferences for a given user', (done) => {
             request(url)
-                .get('/preferences?userId=me@universe.u')
+                .get('/preferences/me@universe.u')
                 .end((err, res) => {
-                    if (err) {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     res.body.should.have.lengthOf(1);
                     array = JSON.parse(res.text);
@@ -110,13 +102,45 @@ describe('Routing', () => {
 
         it('should return zero preferences for a non-existent user', (done) => {
             request(url)
-                .get('/preferences?userId=whoami@universe.u')
+                .get('/preferences/whoami@universe.u')
                 .end((err, res) => {
-                    if (err) {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     res.body.should.have.lengthOf(0);
+                    done();
+                });
+        });
+
+        //Update Tests
+        //
+
+        it('should successfully update a preference given a user', (done) => {
+            var profile = {
+                serviceId: 'anewservice'
+            };
+            request(url)
+                .put('/preferences/' + 'me@universe.u')
+                .send(profile)
+                .end((err, res) => {
+                    if (err)
+                        throw err;
+                    res.should.have.property('status', 200);
+                    done();
+                });
+        });
+
+        it('should return the updated preference', (done) => {
+            request(url)
+                .get('/preferences/me@universe.u')
+                .end((err, res) => {
+                    if (err)
+                        throw err;
+                    res.should.have.property('status', 200);
+                    res.body.should.have.lengthOf(1);
+                    array = JSON.parse(res.text);
+                    assert.equal(array[0].userId, 'me@universe.u');
+                    assert.equal(array[0].serviceId, 'anewservice');
                     done();
                 });
         });

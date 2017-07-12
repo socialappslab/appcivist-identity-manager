@@ -6,19 +6,19 @@ var dbutils = require('../lib/dbutils.js');
 
 var app = require('../start');
 
-describe('Routing', function() {
+describe('Routing', () => {
     var url = 'http://localhost:' + process.env.USNB_ENTITY_MANAGER_PORT;
 
-    before(function(done) {
-        dbutils.cleardb(function() {
+    before((done) => {
+        dbutils.cleardb(() => {
             done();
         });
     });
 
     //Create tests
     //
-    describe('User', function() {
-        it('should successfully create a new user', function(done) {
+    describe('User', () => {
+        it('should successfully create a new user', (done) => {
             var profile = {
                 userId: 'user@universe.u',
                 name: 'Test User'
@@ -26,17 +26,15 @@ describe('Routing', function() {
             request(url)
                 .post('/users')
                 .send(profile)
-                .end(function(err, res) {
-                    if (err) {
-                        console.log(err);
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     done();
                 });
         });
 
-        it('should successfully create another new user', function(done) {
+        it('should successfully create another new user', (done) => {
             var profile = {
                 userId: 'test@elsewhere.e',
                 name: 'Test User2'
@@ -44,16 +42,15 @@ describe('Routing', function() {
             request(url)
                 .post('/users')
                 .send(profile)
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     done();
                 });
         });
 
-        it('should successfully create even another new user', function(done) {
+        it('should successfully create even another new user', (done) => {
             var profile = {
                 userId: 'third@ss.com',
                 name: 'Third One'
@@ -61,10 +58,9 @@ describe('Routing', function() {
             request(url)
                 .post('/users')
                 .send(profile)
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     done();
                 });
@@ -72,13 +68,12 @@ describe('Routing', function() {
 
         //Read tests
         //
-        it('should return three users', function(done) {
+        it('should return three users', (done) => {
             request(url)
                 .get('/users')
-                .end(function(err, res) {
-                    if (err) {
+                .end((err, res) => {
+                    if (err)
                         throw err;
-                    }
                     res.should.have.property('status', 200);
                     res.body.should.have.lengthOf(3);
                     usersArray = JSON.parse(res.text);

@@ -10,32 +10,50 @@ var router = express.Router();
 }
 
 */
-router.get('/', (req, res, next) => {
+router.get('/:userId?', (req, res, next) => {
     db = req.app.get('db');
     var collection = db.collection(collectionName);
-    var userId = req.query.userId;
+    var userId = req.params.userId;
     getPreference(db, userId, (err, items) => {
-        if (err) {
+        if (err)
             res.status(500).send(err);
-        } else {
+        else
             res.send(items);
-        }
     });
 });
 
 
 router.post('/', (req, res) => {
-    var user = req.body;
+    var preference = req.body;
     db = req.app.get('db');
     var collection = db.collection(collectionName);
-    collection.insert(user, (err, result) => {
-        if (err) {
+    collection.insert(preference, (err, result) => {
+        if (err)
             res.status(500).send(err);
-        } else {
+        else
             res.send(result[0]);
-        }
     });
 });
+
+router.put('/:userId', (req, res) => {
+    var userId = req.params.userId;
+    var serviceId = req.body.serviceId;
+    var criteria = {};
+    criteria.userId = userId;
+    db = req.app.get('db');
+    var collection = db.collection(collectionName);
+    collection.update(criteria, {
+        $set: {
+            serviceId: serviceId
+        }
+    }, (err, result) => {
+        if (err)
+            res.status(500).send(err);
+        else
+            res.send(result[0]);
+    });
+});
+
 
 function getPreference(db, userId, callback) {
     var query = {};

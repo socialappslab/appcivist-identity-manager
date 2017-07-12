@@ -6,11 +6,10 @@ router.get('/', (req, res, next) => {
     db = req.app.get('db');
     var collection = db.collection('users');
     collection.find().toArray((err, items) => {
-        if (err) {
+        if (err)
             res.status(500).send(err);
-        } else {
+        else
             res.send(items);
-        }
     });
 });
 
@@ -21,11 +20,10 @@ router.post('/', (req, res) => {
     db = req.app.get('db');
     var collection = db.collection('users');
     collection.insert(user, (err, result) => {
-        if (err) {
+        if (err)
             res.status(500).send(err);
-        } else {
+        else
             res.send(result[0]);
-        }
     });
 });
 

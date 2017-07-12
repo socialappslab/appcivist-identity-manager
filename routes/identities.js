@@ -1,4 +1,4 @@
-var express = require('express');
+const express = require('express');
 var router = express.Router();
 var mongo = require('mongodb').MongoClient;
 //var mongoclass = require('mongodb');
@@ -15,11 +15,11 @@ router.get('/', (req, res, next) => {
     var identity = req.query.identity;
 
     getIdentity(db, null, serviceId, null, identity, (err, items) => {
-        if (err) {
+        if (err)
             res.status(500).send(err);
-        } else {
+        else
             res.send(items);
-        }
+
     });
 });
 
@@ -29,11 +29,11 @@ router.post('/', (req, res) => {
     db = req.app.get('db');
     var collection = db.collection('identities');
     collection.insert(identity, (err, result) => {
-        if (err) {
+        if (err)
             res.status(500).send(err);
-        } else {
+        else
             res.send(result[0]);
-        }
+
     });
 });
 
@@ -49,11 +49,11 @@ router.get('/:userId?/:serviceId?/:enabled?', (req, res) => {
     var enabled = req.query.enabled;
     db = req.app.get('db');
     getIdentity(db, userId, serviceId, enabled, null, (err, items) => {
-        if (err) {
+        if (err)
             res.status(500).send(err);
-        } else {
+        else
             res.send(items);
-        }
+
     });
 });
 
