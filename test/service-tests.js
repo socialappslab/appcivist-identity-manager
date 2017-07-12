@@ -15,6 +15,12 @@ describe('Routing', () => {
         });
     });
 
+    after((done) => {
+        dbutils.cleardb(() => {
+            done();
+        });
+    });
+
     //Create tests
     //
     describe('Service', () => {

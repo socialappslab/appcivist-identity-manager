@@ -16,7 +16,6 @@ router.get('/', (req, res, next) => {
 
 
 router.post('/', (req, res) => {
-    console.log('add user');
     var user = req.body;
     db = req.app.get('db');
     var collection = db.collection(collectionName);

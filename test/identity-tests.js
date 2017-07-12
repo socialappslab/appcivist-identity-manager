@@ -15,6 +15,12 @@ describe('Routing', () => {
         });
     });
 
+    after((done) => {
+        dbutils.cleardb(() => {
+            done();
+        });
+    });
+
     //Create tests
     //
     describe('Identity', () => {
@@ -139,9 +145,9 @@ describe('Routing', () => {
                     res.body.should.have.lengthOf(2);
                     array = JSON.parse(res.text);
                     assert.equal(array[0].userId, 'third@ss.com');
-                    assert.equal(array[0].serviceId, 'twitterdm');
+                    assert.equal(array[0].serviceId, 'email');
                     assert.equal(array[1].userId, 'third@ss.com');
-                    assert.equal(array[1].serviceId, 'email');
+                    assert.equal(array[1].serviceId, 'twitterdm');
                     done();
                 });
         });

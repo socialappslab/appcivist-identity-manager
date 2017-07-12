@@ -11,7 +11,24 @@ mongo.connect(process.env.USNB_MONGO_URI_ENTITY_MANAGER, (err, database) => {
         if (err)
             throw err;
 
-        console.log("Created collection: preferences");
+        database.collection('users').createIndex({
+            "userId": 1
+        }, {
+            unique: true
+        });
+
+        database.collection('services').createIndex({
+            "serviceId": 1
+        }, {
+            unique: true
+        });
+
+        database.collection('identities').createIndex({
+            "userId": 1,
+            "serviceId": 1
+        }, {
+            unique: true
+        });
 
         database.collection('preferences').createIndex({
             "userId": 1

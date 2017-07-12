@@ -15,6 +15,12 @@ describe('Routing', () => {
         });
     });
 
+    after((done) => {
+        dbutils.cleardb(() => {
+            done();
+        });
+    });
+
     //Create tests
     //
     describe('User', () => {
@@ -62,6 +68,22 @@ describe('Routing', () => {
                     if (err)
                         throw err;
                     res.should.have.property('status', 200);
+                    done();
+                });
+        });
+
+        it('should not create a user with duplicate userId', (done) => {
+            var profile = {
+                userId: 'third@ss.com',
+                name: 'Third One'
+            };
+            request(url)
+                .post('/users')
+                .send(profile)
+                .end((err, res) => {
+                    if (err)
+                        throw err;
+                    res.should.have.property('status', 500);
                     done();
                 });
         });
