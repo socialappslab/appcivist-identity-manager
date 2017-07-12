@@ -1,4 +1,5 @@
-var express = require('express');
+const express = require('express'),
+    collectionName = 'users';
 var router = express.Router();
 
 /* GET users listing. */
@@ -18,7 +19,7 @@ router.post('/', (req, res) => {
     console.log('add user');
     var user = req.body;
     db = req.app.get('db');
-    var collection = db.collection('users');
+    var collection = db.collection(collectionName);
     collection.insert(user, (err, result) => {
         if (err)
             res.status(500).send(err);

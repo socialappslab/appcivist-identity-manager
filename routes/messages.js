@@ -2,6 +2,7 @@ const express = require('express'),
     router = express.Router(),
     mongo = require('mongodb').MongoClient,
     identities = require('./identities'),
+    preferences = require('./preferences'),
     Message = require('scb-node-parser/message'),
     sender = require('../amqp-sender');
 //var mongoclass = require('mongodb');
@@ -16,13 +17,10 @@ var BSON = mongo.BSONPure;
  */
 router.post('/', (req, res) => {
     var userId = req.body.to.name;
-    console.log(userId);
-    var query = {};
-    query.userId = userId;
     db = req.app.get('db');
     //query preferences to retrieve the serviceId
     var collection = db.collection('preferences');
-    collection.find(query).toArray((err, items) => {
+    preferences.getPreference(db, userId, (err, items) => {
         if (err) {
             res.status(500).send(err);
         } else {

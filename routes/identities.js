@@ -1,4 +1,5 @@
-const express = require('express');
+const express = require('express'),
+    collectionName = 'identities';
 var router = express.Router();
 var mongo = require('mongodb').MongoClient;
 //var mongoclass = require('mongodb');
@@ -27,7 +28,7 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res) => {
     var identity = req.body;
     db = req.app.get('db');
-    var collection = db.collection('identities');
+    var collection = db.collection(collectionName);
     collection.insert(identity, (err, result) => {
         if (err)
             res.status(500).send(err);
@@ -68,7 +69,7 @@ function getIdentity(db, userId, serviceId, enabled, identity, callback) {
     if (typeof identity !== 'undefined' && identity !== null)
         query.identity = identity;
     console.log(query);
-    var collection = db.collection('identities');
+    var collection = db.collection(collectionName);
     collection.find(query).toArray((err, items) => {
         callback(err, items);
     });
