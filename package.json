@@ -14,7 +14,9 @@
     "morgan": "~1.8.1",
     "serve-favicon": "~2.4.2",
     "mongodb": "2.2.x",
-    "amqplib":"0.5.x"
+    "amqplib":"0.5.x",
+    "message-transformer": "git+https://gitlab.inria.fr/usnb/message-transformer.git"
+
   },
   "devDependencies": {
     "mocha": "^3.4.1",
