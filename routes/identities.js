@@ -14,12 +14,77 @@ router.get('/', (req, res, next) => {
 
     var serviceId = req.query.serviceId;
     var identity = req.query.identity;
-
     getIdentity(db, null, serviceId, null, identity, (err, items) => {
         if (err)
             res.status(500).send(err);
         else
             res.send(items);
+
+    });
+});
+
+    /*
+        { 
+            "serviceId": 'email',
+            "userId": 'appcivistUserUUID',
+            "identity": "<value of notifications.service.email.identity OR appcivistUserEmail if the other is empty>" ,
+            "enabled": <value of notifications.service.email>
+        }
+    */
+router.put('/', (req, res, next) => {
+
+    console.log('PUT Identity');
+
+    db = req.app.get('db');
+    var collection = db.collection(collectionName);
+
+    var serviceId = req.body.serviceId;
+    var identity = req.body.identity;
+    var userId =  req.body.userId;
+
+    getIdentity(db, userId, serviceId, null, null, (err, items) => {
+        if (err){
+            res.status(500).send(err);
+        }
+        else{
+            
+            if (items.length == 0){
+                //insert new identity
+                console.log('Creating Identity');
+                collection.insert(req.body, (err, result) => {
+                    if (err)
+                        res.status(500).send(err);
+                    else
+                        res.send(result[0]);
+                });
+
+            }else{
+                //Do entities update
+                console.log('Updating Identity');
+                var criteria = {
+                    serviceId: req.body.identity,
+                    userId:req.body.userId
+                };
+
+                collection.update(criteria, {
+                    $set: {
+                        identity: req.body.identity,
+                        enabled: req.body.enabled
+                    }
+                }, (err, result) => {
+                        if (err){
+                            console.log('Error Updating Identity');
+                            res.status(500).send(err);
+                        }else{
+                            res.send(result[0]);
+                        }
+                        
+                });
+                console.log('Finish Updating Identity');
+
+            }
+
+        }
 
     });
 });
@@ -30,6 +95,7 @@ router.post('/', (req, res) => {
     db = req.app.get('db');
     var collection = db.collection(collectionName);
     collection.insert(identity, (err, result) => {
+
         if (err)
             res.status(500).send(err);
         else
