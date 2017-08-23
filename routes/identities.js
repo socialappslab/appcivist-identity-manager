@@ -34,13 +34,15 @@ router.get('/', (req, res, next) => {
 router.put('/', (req, res, next) => {
 
     console.log('PUT Identity');
-
+    console.log(req.body);
+    console.log('--------------------------');
     db = req.app.get('db');
     var collection = db.collection(collectionName);
 
     var serviceId = req.body.serviceId;
     var identity = req.body.identity;
     var userId =  req.body.userId;
+    var enabled = req.body.enabled;
 
     getIdentity(db, userId, serviceId, null, null, (err, items) => {
         if (err){
@@ -48,7 +50,38 @@ router.put('/', (req, res, next) => {
         }
         else{
             
-            if (items.length == 0){
+            if (items.length > 0){
+                //Do entities update
+                console.log('Updating Identity');
+                var criteria = {
+                    serviceId: req.body.serviceId,
+                    userId:req.body.userId
+                };
+
+                var updateCriteria ={
+                    $set:{}
+                };
+                
+                if(identity != undefined){
+                    updateCriteria.$set.identity = req.body.identity;
+                }
+                if(enabled != undefined){
+                    updateCriteria.$set.enabled = req.body.enabled;
+                }
+                
+                collection.update(criteria, updateCriteria, (err, result) => {
+                        if (err){
+                            console.log('Error Updating Identity');
+                            res.status(500).send(err);
+                        }else{
+                            console.log('Updating Identity. OK');
+                            res.send(result[0]);
+                        }
+                        
+                });
+                
+
+            }else{
                 //insert new identity
                 console.log('Creating Identity');
                 collection.insert(req.body, (err, result) => {
@@ -57,30 +90,7 @@ router.put('/', (req, res, next) => {
                     else
                         res.send(result[0]);
                 });
-
-            }else{
-                //Do entities update
-                console.log('Updating Identity');
-                var criteria = {
-                    serviceId: req.body.identity,
-                    userId:req.body.userId
-                };
-
-                collection.update(criteria, {
-                    $set: {
-                        identity: req.body.identity,
-                        enabled: req.body.enabled
-                    }
-                }, (err, result) => {
-                        if (err){
-                            console.log('Error Updating Identity');
-                            res.status(500).send(err);
-                        }else{
-                            res.send(result[0]);
-                        }
-                        
-                });
-                console.log('Finish Updating Identity');
+                console.log('Finish Creating Identity');
 
             }
 

@@ -36,22 +36,49 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:userId', (req, res) => {
+
+    console.log(req.body);
+    console.log('--------------------------');
+
     var userId = req.params.userId;
-    var serviceId = req.body.serviceId;
+    var defaultService = req.body.defaultService;
     var criteria = {};
     criteria.userId = userId;
     db = req.app.get('db');
     var collection = db.collection(collectionName);
-    collection.update(criteria, {
-        $set: {
-            serviceId: serviceId
-        }
-    }, (err, result) => {
-        if (err)
+
+    getPreference(db, userId, (err, items) => {
+        if (err){
             res.status(500).send(err);
-        else
-            res.send(result[0]);
+        }
+        else{
+            if (items.length > 0){
+                //Update
+                
+                collection.update(criteria, {
+                    $set: {
+                        defaultService: req.body.defaultService,
+                        autoSusbcriptions:req.body.autoSusbcriptions
+
+                    }
+                }, (err, result) => {
+                    if (err)
+                        res.status(500).send(err);
+                    else
+                        res.send(result[0]);
+                });
+            }else{
+                //Create 
+                 collection.insert(req.body, (err, result) => {
+                    if (err)
+                        res.status(500).send(err);
+                    else
+                        res.send(result[0]);
+                });
+            }
+        }
     });
+    
 });
 
 

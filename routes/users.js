@@ -28,14 +28,25 @@ router.post('/', (req, res) => {
 });
 
 router.get('/:userId?', (req, res, next) => {
+    console.log('GET USER by ID');
     db = req.app.get('db');
     var collection = db.collection(collectionName);
     var userId = req.params.userId;
     getPreference(db, userId, (err, items) => {
-        if (err)
+        if (err){
             res.status(500).send(err);
-        else
-            res.send(items[0]);
+        }
+        else{
+            console.log(items.length);
+            if(items.length > 0) {
+               res.send(items[0]);
+            }else{
+                console.log('User not found');
+                res.status(404).send({});
+                
+            }
+        }
+            
     });
 });
 
